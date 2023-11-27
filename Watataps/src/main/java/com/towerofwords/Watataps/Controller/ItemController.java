@@ -1,11 +1,12 @@
 package com.towerofwords.Watataps.Controller;
 
-import com.towerofwords.Watataps.Entity.ItemEntity;
-import com.towerofwords.Watataps.Service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.towerofwords.Watataps.Entity.ItemEntity;
+import com.towerofwords.Watataps.Service.ItemService;
 
 @RestController
 @RequestMapping("/watataps/items")
@@ -19,27 +20,8 @@ public class ItemController {
     }
 
     @PostMapping("/addItem")
-    public ItemEntity addItem(@RequestBody ItemEntity item) {
-        return itemService.addItem(item);
-    }
-
-    @GetMapping("/getItem/{itemId}")
-    public ItemEntity getItemById(@PathVariable int itemId) {
-        return itemService.getItemById(itemId);
-    }
-
-    @GetMapping("/getAllItems")
-    public List<ItemEntity> getAllItems() {
-        return itemService.getAllItems();
-    }
-
-    @PutMapping("/updateItem")
-    public ItemEntity updateItem(@RequestBody ItemEntity newItem) {
-        return itemService.updateItem(newItem);
-    }
-
-    @DeleteMapping("/deleteItem/{itemId}")
-    public void deleteItem(@PathVariable int itemId) {
-        itemService.deleteItem(itemId);
+    public ResponseEntity<ItemEntity> addItem(@RequestBody ItemEntity item) {
+        ItemEntity savedItem = itemService.addItemWithUserItems(item);
+        return new ResponseEntity<>(savedItem, HttpStatus.CREATED);
     }
 }
