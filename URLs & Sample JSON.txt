@@ -1,0 +1,99 @@
+You can joun my Postman workspace to see the URLs
+Link below
+
+https://app.getpostman.com/join-team?invite_code=c1b6730ca36dce1bba8dc4e7ac6bfb79&target_code=8fb8df4a1c1db90d9ef2d44ebf12da3f
+
+ItemController
+
+
+1. Add Item
+URL: POST /watataps/items/addItem
+Sample JSON:
+
+{
+  "imagePath": "path1",
+  "itemName": "Glitter Powder"
+}
+
+
+
+2. Get All Items
+URL: GET /watataps/items/getAllItems
+Sample Response: Displays all available items
+
+
+
+3. Get Item by ID
+URL: GET /watataps/items/getItemById/{itemId}
+Sample Response : Displays item details of certain item
+
+
+4. Update Item
+URL: PUT /watataps/items/updateItem/{itemId}
+Sample JSON:
+{
+  "imagePath": "YOU CAN UPDATE THIS",
+  "itemName": "YOU CAN UPDATE THIS"
+}
+
+
+UserController
+1. Get All Users
+URL: GET /watataps/users/personalInformation/allUser
+Sample Response: Displays Personal Information of All User
+
+[{
+    "userID": 1,
+    "firstname": "John",
+    "lastname": "Doe",
+    "username": "johndoe",
+    "password": "password"
+
+}]
+
+
+
+
+2. Get User by ID
+URL: GET /watataps/users/personalInformationById/{userId}
+Sample Response: Displays Personal Information of Certain User
+
+
+
+3. Create User
+URL: POST /watataps/users/createUser
+Sample JSON:
+
+{
+  "firstname": "Reyd",
+  "lastname": "Garcia",
+  "username": "@reyd",
+  "password": "secret"
+}
+
+
+4. Get All User Details
+URL: GET /watataps/users/getAllUserDetails
+Sample Response: Displays All Users Details
+
+
+5. Get User Details by ID
+URL: GET /watataps/users/getUserById/{userId}
+Sample Response: Display Certain user Details
+
+
+6. Update User
+URL: PUT /watataps/users/updateUser/{userId}
+Sample JSON:
+
+{
+  "firstname": "YOU CAN UPDATE THIS",
+  "lastname": "YOU CAN UPDATE THIS",
+  "username": "YOU CAN UPDATE THIS",
+  "password": "YOU CAN UPDATE THIS"
+}
+
+
+7. Delete User
+URL: DELETE /watataps/users/deleteUser/{userId}
+Sample JSON: Delete certain User by ID
