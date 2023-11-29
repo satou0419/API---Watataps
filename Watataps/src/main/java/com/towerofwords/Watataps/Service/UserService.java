@@ -1,41 +1,66 @@
 package com.towerofwords.Watataps.Service;
 
-import com.towerofwords.Watataps.Entity.UserDetailsEntity;
-import com.towerofwords.Watataps.Entity.UserEntity;
-import com.towerofwords.Watataps.Repository.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.towerofwords.Watataps.Entity.ItemEntity;
+import com.towerofwords.Watataps.Entity.UserDetailsEntity;
+import com.towerofwords.Watataps.Entity.UserEntity;
+import com.towerofwords.Watataps.Entity.UserItemEntity;
+import com.towerofwords.Watataps.Repository.ItemRepository;
+import com.towerofwords.Watataps.Repository.UserDetailsRepository;
+import com.towerofwords.Watataps.Repository.UserRepository;
 
-import javax.transaction.Transactional;
 @Service
+@Transactional
 public class UserService {
 
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    private UserDetailsRepository userDetailsRepository;
+
+    @Autowired
+    private ItemRepository itemEntityRepository;
+    
+    
+    
+    public List<UserEntity> getAllUsers() {
+        return userRepository.findAll();
     }
 
-    @Transactional
+    public UserEntity getUserById(int userId) {
+        Optional<UserEntity> userOptional = userRepository.findById(userId);
+        return userOptional.orElse(null);
+    }
+    
     public UserEntity createUser(UserEntity user) {
         UserDetailsEntity userDetails = new UserDetailsEntity();
         userDetails.setProgress(0);
         userDetails.setCredit(0);
 
+        List<ItemEntity> items = itemEntityRepository.findAll();
+        List<UserItemEntity> userItems = new ArrayList<>();
+
+        
+        for (ItemEntity item : items) {
+            UserItemEntity userItemEntity = new UserItemEntity();
+            userItemEntity.setUserDetails(userDetails);
+            userItemEntity.setItem(item);
+            userItemEntity.setQuantity(0);
+            userItems.add(userItemEntity);
+        }
+
+        userDetails.setUserItems(userItems);
         user.setUserDetails(userDetails);
 
         return userRepository.save(user);
-    }
-    
-    public UserEntity getUserById(int userId) {
-        return userRepository.findById(userId).orElse(null);
-    }
-    
-    public List<UserEntity> getAllUsers() {
-        return userRepository.findAll();
     }
     
     @Transactional
@@ -43,7 +68,7 @@ public class UserService {
         UserEntity existingUser = userRepository.findById(userId).orElse(null);
 
         if (existingUser != null) {
-            // Update only the non-null fields
+            // Update only non-null fields
             if (updatedUser.getFirstname() != null) {
                 existingUser.setFirstname(updatedUser.getFirstname());
             }
@@ -57,23 +82,16 @@ public class UserService {
                 existingUser.setPassword(updatedUser.getPassword());
             }
 
-            // Update only if the UserDetailsEntity is not null
-            if (existingUser.getUserDetails() != null && updatedUser.getUserDetails() != null) {
-                UserDetailsEntity existingDetails = existingUser.getUserDetails();
-                UserDetailsEntity updatedDetails = updatedUser.getUserDetails();
-
-                existingDetails.setProgress(updatedDetails.getProgress());
-                existingDetails.setCredit(updatedDetails.getCredit());
-            }
+            // You can add more fields to update based on your requirements
 
             return userRepository.save(existingUser);
         }
 
-        return null; // or throw an exception
+        return null; // or throw an exception if needed
     }
 
-    @Transactional
     public void deleteUser(int userId) {
         userRepository.deleteById(userId);
     }
+
 }

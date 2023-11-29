@@ -1,46 +1,80 @@
 package com.towerofwords.Watataps.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.towerofwords.Watataps.Entity.UserEntity;
+import com.towerofwords.Watataps.Entity.UserDetailsEntity;
 import com.towerofwords.Watataps.Service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import com.towerofwords.Watataps.Service.UserDetailsService;
 
 import java.util.List;
 
-//UserController.java
 @RestController
 @RequestMapping("/watataps/users")
 public class UserController {
 
- private final UserService userService;
+    private final UserService userService;
+    private final UserDetailsService userDetailsService;
 
- @Autowired
- public UserController(UserService userService) {
-     this.userService = userService;
- }
+    @Autowired
+    public UserController(UserService userService, UserDetailsService userDetailsService) {
+        this.userService = userService;
+        this.userDetailsService = userDetailsService;
+    }
+    
+    
+    @GetMapping("/personalInformation/allUser")
+    public ResponseEntity<List<UserEntity>> getAllUsers() {
+        List<UserEntity> allUsers = userService.getAllUsers();
+        return ResponseEntity.ok(allUsers);
+    }
 
- @GetMapping("/getAllUsers")
- public List<UserEntity> getAllUsers() {
-     return userService.getAllUsers();
- }
+    @GetMapping("/personalInformationById/{userId}")
+    public ResponseEntity<UserEntity> getUserById(@PathVariable int userId) {
+        UserEntity user = userService.getUserById(userId);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
- @GetMapping("/getUserById/{userId}")
- public UserEntity getUserById(@PathVariable int userId) {
-     return userService.getUserById(userId);
- }
+    @PostMapping("/createUser")
+    public UserEntity createUser(@RequestBody UserEntity user) {
+        return userService.createUser(user);
+    }
 
- @PostMapping("/createUser")
- public UserEntity createUser(@RequestBody UserEntity user) {
-     return userService.createUser(user);
- }
+    @GetMapping("/getAllUsersDetails")
+    public ResponseEntity<List<UserDetailsEntity>> getAllUserDetails() {
+        List<UserDetailsEntity> allUserDetails = userDetailsService.getAllUserDetails();
+        return ResponseEntity.ok(allUserDetails);
+    }
 
- @PutMapping("/updateUser/{userId}")
- public UserEntity updateUser(@PathVariable int userId, @RequestBody UserEntity updatedUser) {
-     return userService.updateUser(userId, updatedUser);
- }
+    @GetMapping("/getUserById/{userId}")
+    public ResponseEntity<UserDetailsEntity> getUserDetailsById(@PathVariable int userId) {
+        UserDetailsEntity userDetails = userDetailsService.getUserDetailsById(userId);
+        if (userDetails != null) {
+            return ResponseEntity.ok(userDetails);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
+    @PutMapping("/updateUser/{userId}")
+    public ResponseEntity<UserEntity> updateUser(@PathVariable int userId, @RequestBody UserEntity updatedUser) {
+        UserEntity updatedUserEntity = userService.updateUser(userId, updatedUser);
 
- @DeleteMapping("/deleteUser/{userId}")
- public void deleteUser(@PathVariable int userId) {
-     userService.deleteUser(userId);
- }
+        if (updatedUserEntity != null) {
+            return ResponseEntity.ok(updatedUserEntity);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/deleteUser/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable int userId) {
+        userService.deleteUser(userId);
+        return ResponseEntity.noContent().build();
+    }
 }
