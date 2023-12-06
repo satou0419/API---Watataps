@@ -1,8 +1,12 @@
 package com.towerofwords.Watataps.Entity;
 
+import java.util.List;
+
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "tbl_user_details")
@@ -16,10 +20,24 @@ public class UserDetailsEntity {
 
 
     
-    @JsonIgnore
+    @JsonManagedReference
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userIDRef")
     private UserEntity user;
+    
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @OneToMany(mappedBy = "userDetails", cascade = CascadeType.ALL)
+    private List<UserItemEntity> userItems;
+
+    
+
+	public List<UserItemEntity> getUserItems() {
+		return userItems;
+	}
+
+	public void setUserItems(List<UserItemEntity> userItems) {
+		this.userItems = userItems;
+	}
 
 	public UserDetailsEntity() {
 		super();
@@ -64,7 +82,5 @@ public class UserDetailsEntity {
 	public void setUser(UserEntity user) {
 		this.user = user;
 	}
-
-
 	
 }

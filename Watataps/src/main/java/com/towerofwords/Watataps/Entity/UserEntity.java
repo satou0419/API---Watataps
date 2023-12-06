@@ -1,6 +1,8 @@
 package com.towerofwords.Watataps.Entity;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "tbl_user")
 public class UserEntity {
@@ -15,9 +17,16 @@ public class UserEntity {
     private String password;
 
 
+    @JsonBackReference
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private UserDetailsEntity userDetails;
-
+    
+    
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private UserArchiveEntity userArchive;
+    
+    
+    
 	public UserEntity() {
 		super();
 	}
@@ -83,5 +92,16 @@ public class UserEntity {
 	        }
 	        this.userDetails = userDetails;
 	    }
-    
+
+	    public UserArchiveEntity getUserArchive() {
+	        return userArchive;
+	    }
+
+	    public void setUserArchive(UserArchiveEntity userArchive) {
+	        if (userArchive != null) {
+	            userArchive.setUserIDRef(this.userID);
+	        }
+	        this.userArchive = userArchive;
+	    }
+	
 }
